@@ -1,13 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 app = FastAPI()
 
 class Characteristics(BaseModel):
     ram_memory: int
     rom_memory: int
-
 
 class Phone(BaseModel):
     identifier: str
@@ -34,11 +33,12 @@ async def get_phone(id: str):
     for phone in phones:
         if phone.identifier == id:
             return phone
-    raise HTTPException(status_code=404, detail="telephone non trouvé")
+    raise HTTPException(status_code=404, detail="Téléphone non trouvé")
 
 @app.put("/phones/{id}/characteristics")
 async def update_characteristics(id: str, characteristics: Characteristics):
     for phone in phones:
         if phone.identifier == id:
             phone.characteristics = characteristics
-            return {"message": "Characteristiques mis a jour succes"}
+            return {"message": "Caractéristiques mises à jour avec succès"}
+    raise HTTPException(status_code=404, detail="Téléphone non trouvé")
