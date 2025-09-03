@@ -1,9 +1,122 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
-  title: Title
-  description: Title
+  title: STD24080
+  description: This is a specification of STD24080.
   version: 1.0.0
 servers:
-  - url: 'https'
+  - url: "http://localhost:8000"
 paths:
-  
+
+  /health:
+    get:
+      summary: retourner OK
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ok"
+
+  /phones:
+    post:
+      summary: Crée un nouveau téléphone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phone'
+      responses:
+        '201':
+          description: Téléphone créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+
+    get:
+      summary: Récupère tous les téléphones
+      responses:
+        '200':
+          description: Liste de téléphones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Phone'
+
+  /phones/{id}:
+    get:
+      summary: Récupère un téléphone spécifique
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: L'identifiant du téléphone
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Téléphone trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+        '404':
+          description: Téléphone non trouvé
+
+    put:
+      summary: Met à jour les caractéristiques d'un téléphone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: L'identifiant du téléphone
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Characteristics'
+      responses:
+        '200':
+          description: Caractéristiques mises à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Characteristics updated successfully"
+        '404':
+          description: Téléphone non trouvé
+
+components:
+  schemas:
+    Characteristics:
+      type: object
+      properties:
+        ram_memory:
+          type: integer
+          example: 8
+        rom_memory:
+          type: integer
+          example: 128
+
+    Phone:
+      type: object
+      properties:
+        identifier:
+          type: string
+          example: "phone-001"
+        model:
+          type: string
+          example: "Smartphone X"
+        characteristics:
+          $ref: '#/components/schemas/Characteristics'
